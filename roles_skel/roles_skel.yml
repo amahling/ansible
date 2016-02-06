@@ -1,0 +1,25 @@
+---
+# create Roles Skeleton
+# Usage: ansible-playbook roles_skel.yml --extra-vars 'role=<my_new_role>'
+- hosts: localhost
+
+  vars:
+    role_components:
+      - files
+      - handlers
+      - meta
+      - templates
+      - tasks
+      - vars
+
+  tasks:
+    - name: create directories for role "{{ role }}"
+      file: dest=../roles/{{ role }}/{{ item }} state=directory
+      with_items: role_components
+
+    - name: create main.yml for role "{{ role }}"
+      template: src=./roles_main.j2 dest=../roles/{{ role }}/{{ item }}/main.yml
+      when: item != 'files' and item != 'templates'
+      with_items: role_components
+...
+# vim: ai sw=2 ts=2 expandtab :
